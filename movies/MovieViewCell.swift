@@ -26,6 +26,22 @@ class MovieViewCell: UITableViewCell {
     func onBind(data: Result) {
         name.text = data.title
         overview.text = data.overview
+        
+        URLSession.shared.dataTask(with: URLRequest(url: URL(string: "https://image.tmdb.org/t/p/w342/\(data.posterPath)")!)) {
+            
+            
+            (data, req, error) in
+            
+            do {
+                var posterView = try data
+                
+                DispatchQueue.main.async {
+                    self.poster.image = UIImage(data: posterView!)
+                }
+            } catch {
+                
+            }
+        }.resume()
     }
     
 }
