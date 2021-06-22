@@ -38,6 +38,25 @@ class ViewController: UIViewController {
         }.resume()
         
     }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
+        
+        let label = UILabel(frame: CGRect(x: 30, y: 5, width: header.frame.size.width - 15, height: header.frame.size.height - 10))
+        
+        header.addSubview(label)
+        label.text = "Movie List"
+        
+        
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 100
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
 
 
 }
