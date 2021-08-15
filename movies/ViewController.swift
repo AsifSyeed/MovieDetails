@@ -7,37 +7,56 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
-    var dataList = [Result]()
     
     
-    @IBOutlet weak var tview: UITableView!
+    
+    @IBOutlet weak var tableView: UITableView!
+
+    
+    var movies = [Result]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        tview.register(UINib(nibName: "MovieViewCell", bundle: nil), forCellReuseIdentifier: "cell")
-        
-        URLSession.shared.dataTask(with: URLRequest(url: URL(string: "https://api.themoviedb.org/3/search/movie?api_key=38e61227f85671163c275f9bd95a8803&query=marvel")!)) {
-            
-            
-            (data, req, error) in
-            
-            do {
-                let movieResult = try JSONDecoder().decode(Movie.self, from: data!)
+        tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
                 
-                DispatchQueue.main.async {
-                    self.dataList = movieResult.results
-                    self.tview.reloadData()
+            URLSession.shared.dataTask(with: URLRequest(url: URL(string: "https://api.themoviedb.org/3/search/movie?api_key=38e61227f85671163c275f9bd95a8803&query=marvel")!)) {
+                
+                
+                (data, req, error) in
+                
+                do {
+                    let movieResult = try JSONDecoder().decode(Movie.self, from: data!)
+                    
+                    DispatchQueue.main.async {
+                        self.movies = movieResult.results
+                        self.tableView.reloadData()
+                    }
+                } catch {
+                    
                 }
-            } catch {
-                
-            }
-        }.resume()
+            }.resume()
         
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return movies.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+                
+        cell.onBind(data: movies[indexPath.row])
+        
+        return cell
+        
+    }
+    
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
         
@@ -50,30 +69,10 @@ class ViewController: UIViewController {
         return header
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 100
-    }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+    
+    
 
 
-}
-
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MovieViewCell
-        
-        cell.onBind(data: dataList[indexPath.row])
-        
-        return cell
-    }
-    
-    
 }
 

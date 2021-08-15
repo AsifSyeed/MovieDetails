@@ -1,17 +1,17 @@
 //
-//  MovieViewCell.swift
+//  TableViewCell.swift
 //  movies
 //
-//  Created by BS-236 on 21/6/21.
+//  Created by BS-236 on 24/6/21.
 //
 
 import UIKit
 
-class MovieViewCell: UITableViewCell {
+class TableViewCell: UITableViewCell {
 
-    @IBOutlet weak var overview: UILabel!
-    @IBOutlet weak var name: UILabel!
-    @IBOutlet weak var poster: UIImageView!
+    @IBOutlet weak var moviePoster: UIImageView!
+    @IBOutlet weak var movieName: UILabel!
+    @IBOutlet weak var movieDesc: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -20,12 +20,12 @@ class MovieViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        
+        // Configure the view for the selected state
     }
     
     func onBind(data: Result) {
-        name.text = data.title
-        overview.text = data.overview
+        movieName.text = data.title
+        movieDesc.text = data.overview
         
         URLSession.shared.dataTask(with: URLRequest(url: URL(string: "https://image.tmdb.org/t/p/w342/\(data.posterPath)")!)) {
             
@@ -36,12 +36,12 @@ class MovieViewCell: UITableViewCell {
                 var posterView = try data
                 
                 DispatchQueue.main.async {
-                    self.poster.image = UIImage(data: posterView!)
+                    self.moviePoster.image = UIImage(data: posterView!)
                 }
             } catch {
                 
             }
         }.resume()
     }
-    
+
 }
